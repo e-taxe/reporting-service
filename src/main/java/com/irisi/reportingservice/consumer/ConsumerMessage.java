@@ -2,7 +2,6 @@ package com.irisi.reportingservice.consumer;
 
 import com.google.gson.Gson;
 import com.irisi.reportingservice.pojo.Employee;
-import com.irisi.reportingservice.pojo.TaxeSejourTrimPojo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.*;
@@ -18,21 +17,13 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ConsumerMessage {
     private final Gson jsonConverter;
-    //    private final JasperUtils jasperUtils;
     final Random random = new Random();
 
     @KafkaListener(topics = "myTopic")
     public void getFromKafka(String data) {
-        TaxeSejourTrimPojo taxeSejourTrimPojo = jsonConverter.fromJson(data, TaxeSejourTrimPojo.class);
-        log.info("data received is {}", taxeSejourTrimPojo);
-        try {
-            log.info("generating report ...");
-            createPdfReport(getAll());
-            log.info("is generated successfully");
-        } catch (JRException e) {
-            e.printStackTrace();
-        }
-        // generate PDF
+        MessageKafka taxeSejourTrimPojo = jsonConverter.fromJson(data, MessageKafka.class);
+        log.info("taxe sejour {} ", taxeSejourTrimPojo);
+//         sendEmail
     }
 
     private List<Employee> getAll() {
